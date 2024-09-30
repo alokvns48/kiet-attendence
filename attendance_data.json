@@ -1,0 +1,99 @@
+{
+  "d": {
+    "__type": "StudentHomeModel+StudAttendance",
+    "AttendList": [
+      {
+        "CourseName": "Object Oriented System Design with C++",
+        "Attendance": "9/11",
+        "AttendancePerc": "81.82",
+        "CourseCode": "BCS054",
+        "SectionName": "A"
+      },
+      {
+        "CourseName": "Machine Learning Techniques",
+        "Attendance": "11/13",
+        "AttendancePerc": "84.62",
+        "CourseCode": "BCS055",
+        "SectionName": "A"
+      },
+      {
+        "CourseName": "Database Management System",
+        "Attendance": "7/12",
+        "AttendancePerc": "58.33",
+        "CourseCode": "BCS501",
+        "SectionName": "A"
+      },
+      {
+        "CourseName": "Web Technology",
+        "Attendance": "10/12",
+        "AttendancePerc": "83.33",
+        "CourseCode": "BCS502",
+        "SectionName": "A"
+      },
+      {
+        "CourseName": "Design and Analysis of Algorithm",
+        "Attendance": "13/15",
+        "AttendancePerc": "86.67",
+        "CourseCode": "BCS503",
+        "SectionName": "A"
+      },
+      {
+        "CourseName": "Database Management System Lab",
+        "Attendance": "6/6",
+        "AttendancePerc": "100.00",
+        "CourseCode": "BCS551",
+        "SectionName": "A"
+      },
+      {
+        "CourseName": "Web Technology Lab",
+        "Attendance": "8/8",
+        "AttendancePerc": "100.00",
+        "CourseCode": "BCS552",
+        "SectionName": "A"
+      },
+      {
+        "CourseName": "Design and Analysis of Algorithm Lab",
+        "Attendance": "8/8",
+        "AttendancePerc": "100.00",
+        "CourseCode": "BCS553",
+        "SectionName": "A"
+      },
+      {
+        "CourseName": "Mini Project or Internship Assessment",
+        "Attendance": "5/6",
+        "AttendancePerc": "83.33",
+        "CourseCode": "BCS554",
+        "SectionName": "A"
+      },
+      {
+        "CourseName": "Constitution of India, Law and Engineering",
+        "Attendance": "5/6",
+        "AttendancePerc": "83.33",
+        "CourseCode": "BNC501",
+        "SectionName": "A"
+      },
+      {
+        "CourseName": "Aptitude",
+        "Attendance": "6/8",
+        "AttendancePerc": "75.00",
+        "CourseCode": "IT2024APT5",
+        "SectionName": "A"
+      },
+      {
+        "CourseName": "Competitive Programming with DAA + DS",
+        "Attendance": "3/6",
+        "AttendancePerc": "50.00",
+        "CourseCode": "IT2024CP5",
+        "SectionName": "A"
+      },
+      {
+        "CourseName": "Soft Skills",
+        "Attendance": "8/8",
+        "AttendancePerc": "100.00",
+        "CourseCode": "IT2024SS5",
+        "SectionName": "A"
+      }
+    ],
+    "AttendancePercent": null
+  }
+}

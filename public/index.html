@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Attendance Data Fetcher</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      #json-data {
+        white-space: pre-wrap;
+        background-color: #f0f0f0;
+        padding: 10px;
+        border: 1px solid #ccc;
+        display: none; /* Initially hidden */
+      }
+      button {
+        padding: 10px 20px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      input {
+        margin: 5px 0;
+        padding: 10px;
+        width: 100%;
+      }
+      #attendance-chart {
+        max-width: 300px;
+        margin: 20px auto;
+      }
+      #attendance-summary {
+        font-size: large;
+        
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Attendance Data Fetcher</h1>
+
+    <h3>Fetch Attendance Data</h3>
+    <button id="fetch-attendance-btn">Fetch Attendance Data</button>
+    <button id="toggle-data-btn">Show Attendance Data</button>
+    <!-- Toggle Button -->
+    <h3>Attendance Data:</h3>
+    <pre id="json-data">Click the button to fetch attendance data...</pre>
+
+    <h3>Attendance Summary:</h3>
+    <p id="attendance-summary"></p>
+
+    <!-- Donut Chart for Attendance -->
+    <div id="attendance-chart">
+      <canvas id="attendanceChart"></canvas>
+    </div>
+
+    <h3>Bunk Calculator</h3>
+    <input
+      type="number"
+      id="total-classes"
+      placeholder="Total Classes"
+      required
+      readonly
+    />
+    <input
+      type="number"
+      id="current-attendance"
+      placeholder="Current Attendance"
+      required
+      readonly
+    />
+    <input
+      type="number"
+      id="desired-percentage"
+      placeholder="Desired Attendance Percentage"
+      required
+    />
+    <button id="calculate-bunks-btn">Calculate Allowed Bunks</button>
+    <p id="bunk-summary"></p>
+
+    <!-- Include Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+      let attendanceChart;
+
+      document
+        .getElementById("fetch-attendance-btn")
+        .addEventListener("click", async () => {
+          try {
+            const fetchResponse = await fetch("/get-attendance");
+            const result = await fetchResponse.json();
+            if (result.message) {
+              console.log(result.message);
+
+              // Now fetch the saved attendance data
+              const dataResponse = await fetch("/attendance-data");
+              const jsonData = await dataResponse.json();
+
+              // Display the data on the frontend
+              document.getElementById("json-data").textContent = JSON.stringify(
+                jsonData,
+                null,
+                2
+              );
+
+              // Calculate and display attendance ratio and percentage
+              calculateAttendanceRatio(jsonData);
+
+              // Populate total classes and current attendance for the bunk calculator
+              populateBunkCalculator(jsonData);
+            } else {
+              document.getElementById("json-data").textContent =
+                "Error fetching data.";
+            }
+          } catch (error) {
+            console.error("Error:", error);
+            document.getElementById("json-data").textContent =
+              "Error fetching data.";
+          }
+        });
+
+      document
+        .getElementById("toggle-data-btn")
+        .addEventListener("click", () => {
+          const jsonDataElement = document.getElementById("json-data");
+          if (jsonDataElement.style.display === "none") {
+            jsonDataElement.style.display = "block";
+            document.getElementById("toggle-data-btn").textContent =
+              "Hide Attendance Data";
+          } else {
+            jsonDataElement.style.display = "none";
+            document.getElementById("toggle-data-btn").textContent =
+              "Show Attendance Data";
+          }
+        });
+
+      function calculateAttendanceRatio(data) {
+        let totalPresent = 0;
+        let totalClasses = 0;
+
+        data.d.AttendList.forEach((course) => {
+          const [present, total] = course.Attendance.split("/").map(Number);
+          totalPresent += present;
+          totalClasses += total;
+        });
+
+        const percentage = ((totalPresent / totalClasses) * 100).toFixed(2);
+
+        document.getElementById(
+          "attendance-summary"
+        ).textContent = `Total Attendance: ${totalPresent}/${totalClasses}, Attendance Percentage: ${percentage}%`;
+
+        // Update the attendance chart
+        updateAttendanceChart(percentage);
+      }
+
+      function populateBunkCalculator(data) {
+        let totalClasses = 0;
+        let totalPresent = 0;
+
+        data.d.AttendList.forEach((course) => {
+          const [present, total] = course.Attendance.split("/").map(Number);
+          totalPresent += present;
+          totalClasses += total;
+        });
+
+        // Set values for the bunk calculator
+        document.getElementById("total-classes").value = totalClasses;
+        document.getElementById("current-attendance").value = totalPresent;
+      }
+
+      document
+        .getElementById("calculate-bunks-btn")
+        .addEventListener("click", () => {
+          const totalClasses = parseInt(
+            document.getElementById("total-classes").value
+          );
+          const currentAttendance = parseInt(
+            document.getElementById("current-attendance").value
+          );
+          const desiredPercentage = parseFloat(
+            document.getElementById("desired-percentage").value
+          );
+
+          if (
+            isNaN(totalClasses) ||
+            isNaN(currentAttendance) ||
+            isNaN(desiredPercentage)
+          ) {
+            document.getElementById("bunk-summary").textContent =
+              "Please enter valid numbers.";
+            return;
+          }
+
+          // Calculate maximum number of allowed classes to skip
+          const totalPresentNeeded = (desiredPercentage / 100) * totalClasses;
+          const allowedBunks = Math.floor(currentAttendance - totalPresentNeeded);
+
+          document.getElementById(
+            "bunk-summary"
+          ).textContent = `You can skip up to ${allowedBunks} classes to maintain ${desiredPercentage}% attendance.`;
+        });
+
+      // Function to create and update the attendance donut chart
+      function updateAttendanceChart(percentage) {
+        const ctx = document.getElementById("attendanceChart").getContext("2d");
+
+        if (attendanceChart) {
+          attendanceChart.destroy(); // Destroy the previous chart if it exists
+        }
+
+        attendanceChart = new Chart(ctx, {
+          type: "doughnut",
+          data: {
+            datasets: [
+              {
+                data: [percentage, 100 - percentage],
+                backgroundColor: ["#4CAF50", "#D3D3D3"],
+              },
+            ],
+          },
+          options: {
+            cutout: "70%",
+            plugins: {
+              tooltip: { enabled: false },
+              legend: { display: false },
+            },
+          },
+          plugins: [
+            {
+              // Plugin to add percentage text in the center
+              id: "centerText",
+              beforeDraw: function (chart) {
+                const width = chart.width,
+                  height = chart.height,
+                  ctx = chart.ctx;
+
+                ctx.restore();
+                const fontSize = (height / 114).toFixed(2);
+                ctx.font = fontSize + "em sans-serif";
+                ctx.textBaseline = "middle";
+
+                const text = percentage + "%",
+                  textX = Math.round((width - ctx.measureText(text).width) / 2),
+                  textY = height / 2;
+
+                ctx.fillText(text, textX, textY);
+                ctx.save();
+              },
+            },
+          ],
+        });
+      }
+    </script>
+  </body>
+</html>
