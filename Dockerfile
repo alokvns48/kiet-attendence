@@ -8,25 +8,7 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
 
 # Install dependencies required for running Chrome/Chromium in headless mode
 RUN apt-get update && apt-get install -y \
-    ca-certificates \
-    fonts-liberation \
-    libappindicator3-1 \
-    libasound2 \
-    libatk-bridge2.0-0 \
-    libatk1.0-0 \
-    libcups2 \
-    libdbus-1-3 \
-    libxcomposite1 \
-    libxdamage1 \
-    libxrandr2 \
-    libgbm1 \
-    libgtk-3-0 \
-    libnspr4 \
-    libnss3 \
-    libxshmfence1 \
-    lsb-release \
-    wget \
-    xdg-utils \
+    
     google-chrome-stable
 
 # Set the working directory

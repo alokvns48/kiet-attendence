@@ -4,8 +4,8 @@
     "AttendList": [
       {
         "CourseName": "Object Oriented System Design with C++",
-        "Attendance": "9/11",
-        "AttendancePerc": "81.82",
+        "Attendance": "10/12",
+        "AttendancePerc": "83.33",
         "CourseCode": "BCS054",
         "SectionName": "A"
       },
@@ -32,14 +32,14 @@
       },
       {
         "CourseName": "Design and Analysis of Algorithm",
-        "Attendance": "13/15",
-        "AttendancePerc": "86.67",
+        "Attendance": "14/16",
+        "AttendancePerc": "87.50",
         "CourseCode": "BCS503",
         "SectionName": "A"
       },
       {
         "CourseName": "Database Management System Lab",
-        "Attendance": "6/6",
+        "Attendance": "8/8",
         "AttendancePerc": "100.00",
         "CourseCode": "BCS551",
         "SectionName": "A"
