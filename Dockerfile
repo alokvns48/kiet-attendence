@@ -7,9 +7,6 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
     PUPPETEER_CACHE_DIR=/opt/render/project/.chrome
 
 # Install dependencies required for running Chrome/Chromium in headless mode
-RUN apt-get update && apt-get install -y \
-    
-    google-chrome-stable
 
 # Set the working directory
 WORKDIR /usr/src/app
